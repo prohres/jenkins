@@ -1,0 +1,30 @@
+#!groovy
+// Check some agent properties
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent { 
+        label 'master'
+        }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage("Hostname") {
+            steps {
+                sh 'ssh root@agent \'hostname\''
+            }
+        }
+        stage("Uptime") {
+            steps {
+                sh 'ssh root@agent \'uptime\''
+            }
+        }
+         stage("Users") {
+            steps {
+                sh 'ssh root@agent \'w\''
+            }
+        }
+    }
+}

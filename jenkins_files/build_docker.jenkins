@@ -12,9 +12,27 @@ pipeline {
     }
     triggers { pollSCM('* * * * *') }
     stages {
+        stage("Docker login") {
+            steps {
+                echo "============== docker login ========================="
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_prohres', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login -u $USERNAME -p $PASSWORD
+                    """
+                }
+            }
+        }
+        stage("Pull docker image with docker hub") {
+            steps {
+                echo "============== rename old image ======================"
+                 	sh """
+                    docker push prohres/centos_systemd:latest
+                    """
+            }
+        }
         stage("Remame old docker image") {
             steps {
-                echo "============== rename old image =================="
+                echo "============== rename old image ======================"
                  	sh """
                     docker tag prohres/centos_systemd:latest prohres/centos_systemd:old
                     """
@@ -26,6 +44,14 @@ pipeline {
                 dir ('docker/centos_systemd') {
                 	sh ' docker build -t prohres/centos_systemd:latest . '
                 }
+            }
+        }
+        stage("Docker push new image") {
+            steps {
+                echo " ============== start pushing image =================="
+                sh '''
+                docker push prohres/centos_systemd:latest
+                '''
             }
         }
         stage("Remove old docker image") {

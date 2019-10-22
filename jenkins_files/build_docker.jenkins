@@ -10,11 +10,11 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
     }
-    triggers { pollSCM('* * * * *') }
+    triggers { pollSCM('3 * * * *') }
     stages {
         stage("down old docker containers") {
             steps {
-                echo " ============== down and remove image =================="
+                echo "============== down and remove image =================="
                 dir ('docker/centos_systemd') {
                 	sh ' docker-compose down && docker rmi centos:systemd'
                 }
@@ -22,7 +22,7 @@ pipeline {
         }
         stage("create new docker image") {
             steps {
-                echo " ============== start building image =================="
+                echo "============== start building image =================="
                 dir ('docker/centos_systemd') {
                 	sh ' docker build --tag centos:systemd .'
                 }
@@ -30,9 +30,9 @@ pipeline {
         }
         stage("up and run new containers") {
             steps {
-                echo " ============== start run containers =================="
+                echo "============== start run containers =================="
                 dir ('docker/centos_systemd') {
-                	sh ' docker-compose up -d'
+                	sh ' docker-compose up -d .'
                 }
             }
         }

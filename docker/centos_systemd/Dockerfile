@@ -6,7 +6,7 @@
 
 FROM centos:centos7
 
-RUN yum install -y net-tools vim make
+RUN yum install -y net-tools vim make tree
 
 ENV container=docker  
  

@@ -24,7 +24,7 @@ pipeline {
         }
         stage("Pull docker image with docker hub") {
             steps {
-                echo "============== rename old image ======================"
+                echo "============== pull old image ======================"
                  	sh """
                     docker pull prohres/centos_systemd:latest
                     """
@@ -40,7 +40,7 @@ pipeline {
         }
         stage("Build new docker image") {
             steps {
-                echo "============== building new image =================="
+                echo "============== build new image =================="
                 dir ('docker/centos_systemd') {
                 	sh ' docker build -t prohres/centos_systemd:latest . '
                 }
@@ -48,7 +48,7 @@ pipeline {
         }
         stage("Docker push new image") {
             steps {
-                echo " ============== start pushing image =================="
+                echo "============== push new image =================="
                 sh '''
                 docker push prohres/centos_systemd:latest
                 '''
@@ -56,7 +56,7 @@ pipeline {
         }
         stage("Remove old docker image") {
             steps {
-                echo "============== rename old image =================="
+                echo "============== remove old image =================="
                  	sh """
                     docker rmi prohres/centos_systemd:old
                     """

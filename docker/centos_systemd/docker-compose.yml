@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  master:
+    image: centos7:systemd
+    hostname: icinga
+    container_name: icinga_master
+    ports:
+      - "1224:80"
+    tty: true
+    volumes:
+      - type: bind
+        source: /sys/fs/cgroup
+        target: /sys/fs/cgroup
+      - type: bind
+        source: /sys/fs/fuse
+        target: /sys/fs/fuse
+      - type: tmpfs
+        target: /run
+      - type: tmpfs
+        target: /run/lock
+
+  client:
+    image: centos7:systemd
+    hostname: client
+    container_name: icinga_client
+    tty: true
+    depends_on:
+       - master
+    volumes:
+      - type: bind
+        source: /sys/fs/cgroup
+        target: /sys/fs/cgroup
+      - type: bind
+        source: /sys/fs/fuse
+        target: /sys/fs/fuse
+      - type: tmpfs
+        target: /run
+      - type: tmpfs
+        target: /run/lock

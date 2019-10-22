@@ -10,8 +10,17 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
     }
+    triggers { pollSCM('* * * * *') }
     stages {
-        stage("create docker image") {
+        stage("down old docker containers") {
+            steps {
+                echo " ============== down and remove image =================="
+                dir ('docker/centos_systemd') {
+                	sh ' docker-compose down && docker rmi centos:systemd'
+                }
+            }
+        }
+        stage("create new docker image") {
             steps {
                 echo " ============== start building image =================="
                 dir ('docker/centos_systemd') {
@@ -19,17 +28,11 @@ pipeline {
                 }
             }
         }
-        stage("docker run and mount volumes for container") {
+        stage("up and run new containers") {
             steps {
-                echo " ============== start building image =================="
+                echo " ============== start run containers =================="
                 dir ('docker/centos_systemd') {
-                	sh ' docker run \
-                        --detach \
-                        --name=centos_systemd \
-                        --mount type=bind,source=/sys/fs/cgroup,target=/sys/fs/cgroup \
-                        --mount type=bind,source=/sys/fs/fuse,target=/sys/fs/fuse \
-                        --mount type=tmpfs,destination=/run \
-                        --mount type=tmpfs,destination=/run/lock centos:systemd'
+                	sh ' docker-compose up -d'
                 }
             }
         }

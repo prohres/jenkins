@@ -10,13 +10,13 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
     }
-    triggers { pollSCM('3 * * * *') }
+    triggers { pollSCM('* * * * *') }
     stages {
-        stage("Remove old docker image") {
+        stage("Remame old docker image") {
             steps {
-                echo "============== remove old image =================="
+                echo "============== rename old image =================="
                  	sh """
-                    docker rmi centos:systemd
+                    docker tag centos_systemd:latest centos_systemd:old
                     """
             }
         }
@@ -24,8 +24,16 @@ pipeline {
             steps {
                 echo "============== building new image =================="
                 dir ('docker/centos_systemd') {
-                	sh ' docker build --tag centos:systemd . '
+                	sh ' docker build -t centos_systemd:latest . '
                 }
+            }
+        }
+        stage("Remove old docker image") {
+            steps {
+                echo "============== rename old image =================="
+                 	sh """
+                    docker rmi centos_systemd:old
+                    """
             }
         }
     }

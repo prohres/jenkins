@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   master:
-    image: centos_systemd:latest
+    image: prohres/centos_systemd:latest
     hostname: icinga
     container_name: icinga_master
     ports:
@@ -21,7 +21,7 @@ services:
         target: /run/lock
 
   client:
-    image: centos_systemd:latest
+    image: prohres/centos_systemd:latest
     hostname: client
     container_name: icinga_client
     tty: true

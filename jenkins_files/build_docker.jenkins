@@ -16,7 +16,7 @@ pipeline {
             steps {
                 echo "============== rename old image =================="
                  	sh """
-                    docker tag centos_systemd:latest centos_systemd:old
+                    docker tag prohres/centos_systemd:latest prohres/centos_systemd:old
                     """
             }
         }
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 echo "============== building new image =================="
                 dir ('docker/centos_systemd') {
-                	sh ' docker build -t centos_systemd:latest . '
+                	sh ' docker build -t prohres/centos_systemd:latest . '
                 }
             }
         }
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 echo "============== rename old image =================="
                  	sh """
-                    docker rmi centos_systemd:old
+                    docker rmi prohres/centos_systemd:old
                     """
             }
         }

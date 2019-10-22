@@ -19,8 +19,3 @@ ENTRYPOINT ["/sbin/init"]
 CMD ["--log-level=info"]
  
 STOPSIGNAL SIGRTMIN+3
-
-RUN --mount type=bind,source=/sys/fs/cgroup,target=/sys/fs/cgroup \
-    --mount type=bind,source=/sys/fs/fuse,target=/sys/fs/fuse \
-    --mount type=tmpfs,destination=/run \
-    --mount type=tmpfs,destination=/run/lock

@@ -14,8 +14,22 @@ pipeline {
         stage("create docker image") {
             steps {
                 echo " ============== start building image =================="
-                dir ('docker/simple_box') {
-                	sh 'docker build . '
+                dir ('docker/centos_systemd') {
+                	sh ' docker build --tag centos:systemd .'
+                }
+            }
+        }
+        stage("docker run and mount volumes for container") {
+            steps {
+                echo " ============== start building image =================="
+                dir ('docker/centos_systemd') {
+                	sh ' docker run \
+                        --detach \
+                        --name=centos_systemd \
+                        --mount type=bind,source=/sys/fs/cgroup,target=/sys/fs/cgroup \
+                        --mount type=bind,source=/sys/fs/fuse,target=/sys/fs/fuse \
+                        --mount type=tmpfs,destination=/run \
+                        --mount type=tmpfs,destination=/run/lock centos:systemd'
                 }
             }
         }

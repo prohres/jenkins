@@ -26,7 +26,7 @@ pipeline {
             steps {
                 echo "============== rename old image ======================"
                  	sh """
-                    docker push prohres/centos_systemd:latest
+                    docker pull prohres/centos_systemd:latest
                     """
             }
         }

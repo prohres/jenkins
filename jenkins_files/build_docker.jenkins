@@ -12,13 +12,15 @@ pipeline {
     }
     triggers { pollSCM('3 * * * *') }
     stages {
-        stage("Build new docker image") {
+        stage("Remove old docker image") {
             steps {
                 echo "============== remove old image =================="
                  	sh """
                     docker rmi centos:systemd
                     """
             }
+        }
+        stage("Build new docker image") {
             steps {
                 echo "============== building new image =================="
                 dir ('docker/centos_systemd') {

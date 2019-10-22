@@ -12,27 +12,17 @@ pipeline {
     }
     triggers { pollSCM('3 * * * *') }
     stages {
-        stage("down old docker containers") {
+        stage("Build new docker image") {
             steps {
-                echo "============== down and remove image =================="
-                dir ('docker/centos_systemd') {
-                	sh ' docker-compose down && docker rmi centos:systemd'
-                }
+                echo "============== remove old image =================="
+                 	sh """
+                    docker rmi centos:systemd
+                    """
             }
-        }
-        stage("create new docker image") {
             steps {
-                echo "============== start building image =================="
+                echo "============== building new image =================="
                 dir ('docker/centos_systemd') {
-                	sh ' docker build --tag centos:systemd .'
-                }
-            }
-        }
-        stage("up and run new containers") {
-            steps {
-                echo "============== start run containers =================="
-                dir ('docker/centos_systemd') {
-                	sh ' docker-compose up -d .'
+                	sh ' docker build --tag centos:systemd . '
                 }
             }
         }
